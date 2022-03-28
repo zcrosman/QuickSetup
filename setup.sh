@@ -227,7 +227,7 @@ options () {
     echo -e "\n Key  Menu Option:               Description:"
     echo -e " ---  ------------               ------------"
     echo -e "  1 - Install All                Run all of the commands below (1-5)"    
-    echo -e "  2 - Install Windows binaries   Install Windows binaries into " $win_binaries       
+    echo -e "  2 - Install Windows binaries   Install Windows binaries into " $win_compiled       
     echo -e "  3 - Install Windows source     Install Windows source into " $win_source                      
     echo -e "  4 - Install Kali tools         Install common Kali tools into " $tools_path  
     echo -e "  5 - Instal BOFs                Install Cobalt Strike agressor scripts into " $agressor_path                            

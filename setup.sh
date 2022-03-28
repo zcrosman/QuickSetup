@@ -216,7 +216,8 @@ win_binaries(){
 
     # SharpHound
     wget https://github.com/BloodHoundAD/SharpHound/releases/download/v1.0.3/SharpHound-v1.0.3.zip -O $win_compiled/SharpHound/SharpHound.zip
-    unzip $win_compiled/SharpHound/SharpHound.zip
+    cd $win_compiled/SharkHound
+    unzip SharpHound.zip
 
 }
 
@@ -226,8 +227,8 @@ options () {
     echo -e "\n Key  Menu Option:               Description:"
     echo -e " ---  ------------               ------------"
     echo -e "  1 - Install All                Run all of the commands below (1-5)"    
-    echo -e "  2 - Install Windows tools      Install Windows binaries into " $win_binaries       
-    echo -e "  3 - Install Windows binaries   Install Windows source into " $win_source                      
+    echo -e "  2 - Install Windows binaries   Install Windows binaries into " $win_binaries       
+    echo -e "  3 - Install Windows source     Install Windows source into " $win_source                      
     echo -e "  4 - Install Kali tools         Install common Kali tools into " $tools_path  
     echo -e "  5 - Instal BOFs                Install Cobalt Strike agressor scripts into " $agressor_path                            
     echo -e "  6 - Start BloodHound           Start Neo4j and BloodHound (installs if not already installed)"
@@ -237,9 +238,9 @@ options () {
     read -n1 -p "\n  Press key for menu item selection or press X to exit: " menu
 
     case $menu in
-        1) setup;install_go;win_source_dl;install_tools;install_BOFs;;
+        1) setup;install_go;win_source;win_binaries;install_tools;install_BOFs;;
         2) win_source;;
-        3) win_compiled;;
+        3) win_binaries;;
         4) install_tools;;
         5) install_BOFs;;
         6) check_bh;;

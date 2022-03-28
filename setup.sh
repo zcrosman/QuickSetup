@@ -7,11 +7,11 @@
 # - automation of common repeatable tasks???
 
 #PATHS
-agressor_path='/home/'$(logname)'/Documents/Agressor'
+agressor_path='/home/'$SUDO_USER'/Documents/Agressor'
 powershell_scripts='/opt/powershell'
 tools_path='/opt'
-win_source='/home/'$(logname)'/Windows/Source'
-win_compiled='/home/'$(logname)'/Windows/Compiled'
+win_source='/home/'$SUDO_USER'/Windows/Source'
+win_compiled='/home/'$SUDO_USER'/Windows/Compiled'
 
 
 check_user() {

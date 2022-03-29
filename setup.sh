@@ -37,7 +37,7 @@ install_go(){
 }
 
 install_BOFs() {
-# Agressor Scripts Download
+    # Agressor Scripts Download
     echo -e "\n\n\n Installing agressor scripts\n\n\n"
     git clone https://github.com/trustedsec/CS-Situational-Awareness-BOF.git $agressor_path/CS-Situational-Awareness
     git clone https://github.com/rasta-mouse/Aggressor-Script.git $agressor_path/Rasta-agressor-scripts
@@ -47,7 +47,6 @@ install_BOFs() {
 }
 
 install_tools() {
-# Install Tools
     echo -e "\n\n\n Installing Kali tools\n\n\n"
     #Submime
     wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -

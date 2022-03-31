@@ -239,6 +239,7 @@ win_binaries(){
 install_wl() {
     # install additional wordlists
     # TODO
+    echo 'TODO'
 }
 
 add_aliases() {
@@ -258,7 +259,7 @@ add_aliases() {
 basic_scripts() {
     # TODO
     # 
-
+    echo 'TODO'
 }
 
 

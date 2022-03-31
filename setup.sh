@@ -7,6 +7,18 @@
 # - automation of common repeatable tasks???
 
 
+typeset -A bh_config
+# If you want to use bloodhound integration with cme update the parameters below 
+# If you want to remove this funcationality set the [bh_enabled] parameter to false
+bh_config=(
+    [bh_enabled]="True"
+    [bh_uri]="127.0.0.1"
+    [bh_port]="7687"
+    [bh_user]="neo4j"       # CHANGE THIS
+    [bh_pass]="password"    # CHANGE THIS
+)
+
+
 #PATHS
 agressor_path='/home/'$SUDO_USER'/Documents/Agressor'
 powershell_scripts='/opt/powershell'
@@ -45,7 +57,7 @@ install_BOFs() {
     git clone https://github.com/rasta-mouse/Aggressor-Script.git $agressor_path/Rasta-agressor-scripts
     git clone https://github.com/Und3rf10w/Aggressor-scripts.git $agressor_path/Und3rf10w-agressor-scripts
     git clone https://github.com/harleyQu1nn/AggressorScripts $agressor_path/harleyQu1nn-agressor-scripts
-    git clone https://github.com/anthemtotheego/CredBandit.git $AggressorScripts/CredBandit
+    git clone https://github.com/anthemtotheego/CredBandit.git $agressor_path/CredBandit
     # TODO add custom BOFs
 }
 
@@ -162,18 +174,19 @@ install_bh() {
     # BloodHound
     mkdir $tools_path/BloodHound
     wget https://github.com/BloodHoundAD/BloodHound/releases/download/rolling/BloodHound-linux-x64.zip -O $tools_path/BloodHound/BloodHound_4.1.zip
+    cd $tools_path/BloodHound
     unzip $tools_path/BloodHound/BloodHound_4.1.zip
 
-    # TODO - Configure cme intergration
-    # [BloodHound]
-    # bh_enabled = True
-    # bh_uri = 127.0.0.1
-    # bh_port = 7687
-    # bh_user = user
-    # bh_pass = pass
-
-    # Add custom bloodhound queries from hausec 
-    wget https://raw.githubusercontent.com/hausec/Bloodhound-Custom-Queries/master/customqueries.json -O '/home/'$SUDO_USER'/.config/bloodhound/customqueries.json'
+    # Configure cme intergration
+    if [ ${config[bh_enabled]} = 'True' ]
+        $config='/home/'$SUDO_USER'/.cme/cme.conf'
+        echo '\n[BloodHound]' >> $config
+        echo 'bh_enabled = True' >> $config
+        echo 'bh_uri = '${config[bh_uri]} >> $config
+        echo 'bh_port = '${config[bh_port]} >> $config
+        echo 'bh_user = '${config[bh_user]} >> $config
+        echo 'bh_pass = '${config[bh_pass]} >> $config
+    fi
 
     # Neo4j
     wget -O - https://debian.neo4j.com/neotechnology.gpg.key | sudo apt-key add -
@@ -189,6 +202,9 @@ start_bh() {
     cd $tools_path/BloodHound/BloodHound-linux-x64
     ./BloodHound --no-sandbox &
     
+    # Add custom bloodhound queries from hausec (will need to refresh on first open)
+    wget https://raw.githubusercontent.com/hausec/Bloodhound-Custom-Queries/master/customqueries.json -O '/home/'$SUDO_USER'/.config/bloodhound/customqueries.json'
+
     echo -e "Starting neo4j!!!"
     cd /usr/bin
     ./neo4j console 
@@ -231,7 +247,7 @@ win_binaries(){
 
     # SharpHound
     wget https://github.com/BloodHoundAD/SharpHound/releases/download/v1.0.3/SharpHound-v1.0.3.zip -O $win_compiled/SharpHound/SharpHound.zip
-    cd $win_compiled/SharkHound
+    cd $win_compiled/SharpHound
     unzip SharpHound.zip
 
 }
@@ -257,9 +273,8 @@ add_aliases() {
 }
 
 basic_scripts() {
-    # TODO
-    # 
-    echo 'TODO'
+    # TODO 
+    echo 'TODO Create basic scirpts'
 }
 
 
@@ -268,13 +283,14 @@ options () {
     echo -e "\n    Select an option from menu:"                      
     echo -e "\n Key  Menu Option:               Description:"
     echo -e " ---  ------------               ------------"
-    echo -e "  1 - Install All                Run all of the commands below (1-5)"    
-    echo -e "  2 - Install Windows binaries   Install Windows binaries into " $win_compiled       
-    echo -e "  3 - Install Windows source     Install Windows source into " $win_source                      
-    echo -e "  4 - Install Kali tools         Install common Kali tools into " $tools_path  
-    echo -e "  5 - Instal BOFs                Install Cobalt Strike agressor scripts into " $agressor_path                            
-    echo -e "  6 - Start BloodHound           Start Neo4j and BloodHound (installs if not already installed)"
-    echo -e "  7 - Install wordlists (TODO)   Install additional wordlists"
+    echo -e "  1 - Basic Install              Run commands (3,4,5)" # TODO - organize the basic install 
+    echo -e "  2 - Install All                Run all of the commands below (1-5)"    
+    echo -e "  3 - Install Windows binaries   Install Windows binaries into " $win_compiled       
+    echo -e "  4 - Install Windows source     Install Windows source into " $win_source                      
+    echo -e "  5 - Install Kali tools         Install common Kali tools into " $tools_path  
+    echo -e "  6 - Instal BOFs                Install Cobalt Strike agressor scripts into " $agressor_path                            
+    echo -e "  7 - Start BloodHound           Start Neo4j and BloodHound (installs if not already installed)"
+    echo -e "  8 - Install wordlists (TODO)   Install additional wordlists"
     echo -e "  8 - Add aliases (TODO)         TODO"
     echo -e "  9 - TODO                       TODO"
     echo -e "  x - Exit                       Exit the setup script"                                      
@@ -282,14 +298,15 @@ options () {
     read -n1 -p "\n  Press key for menu item selection or press X to exit: " menu
 
     case $menu in
-        1) setup;install_go;win_source;win_binaries;install_tools;install_BOFs;;
-        2) win_source;;
-        3) win_binaries;;
-        4) install_tools;;
-        5) install_BOFs;;
-        6) check_bh;;
-        7) install_wl;;
-        8) add_aliases;;
+        1) win_binaries;install_tools;install_BOFs
+        2) setup;install_go;win_source;win_binaries;install_tools;install_BOFs;;
+        3) win_source;;
+        4) win_binaries;;
+        5) install_tools;;
+        6) install_BOFs;;
+        7) check_bh;;
+        9) install_wl;;
+        9) add_aliases;;
         9) exit;;
         x) exit;;  
     esac

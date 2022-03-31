@@ -6,12 +6,14 @@
 # - create aliases for common commands
 # - automation of common repeatable tasks???
 
+
 #PATHS
 agressor_path='/home/'$SUDO_USER'/Documents/Agressor'
 powershell_scripts='/opt/powershell'
 tools_path='/opt'
 win_source='/home/'$SUDO_USER'/Windows/Source'
 win_compiled='/home/'$SUDO_USER'/Windows/Compiled'
+# payload_mod = '/opt/payloadMod'   
 
 
 check_user() {
@@ -43,6 +45,7 @@ install_BOFs() {
     git clone https://github.com/rasta-mouse/Aggressor-Script.git $agressor_path/Rasta-agressor-scripts
     git clone https://github.com/Und3rf10w/Aggressor-scripts.git $agressor_path/Und3rf10w-agressor-scripts
     git clone https://github.com/harleyQu1nn/AggressorScripts $agressor_path/harleyQu1nn-agressor-scripts
+    git clone https://github.com/anthemtotheego/CredBandit.git $AggressorScripts/CredBandit
     # TODO add custom BOFs
 }
 
@@ -50,8 +53,9 @@ install_tools() {
     echo -e "\n\n\n Installing Kali tools\n\n\n"
     #Submime
     wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
-    sudo apt-get install apt-transport-https
-    apt -y install sublime-text
+    apt-get -y install apt-transport-https
+    apt-get update
+    apt-get -y install sublime-text
 
     # mitm6
     git clone https://github.com/dirkjanm/mitm6.git $tools_path/mitm6
@@ -65,6 +69,8 @@ install_tools() {
     # Kerbrute
     go get github.com/ropnop/kerbrute #TODO output dir
 
+    # pypykatz
+    git clone https://github.com/skelsec/pypykatz.git $tools_path
 
     # evilwin-rm
     gem install evil-winrm
@@ -85,7 +91,6 @@ install_tools() {
 
     # Bloodhound and Neo4j install
     install_bh
-
 
     # Binary/Payload Modification/Creation
     # TODO - create folder for payload creation????
@@ -114,10 +119,11 @@ install_tools() {
         #Morph-HTA
         git clone https://github.com/vysecurity/morphHTA.git $tools_path/morphHTA
 
-        # TODO Invoke-Obfuscation
-
+        # Invoke-Obfuscation
+        git clone https://github.com/danielbohannon/Invoke-Obfuscation.git $tools_path/Invoke-Obfuscation
 
         # TODO - Go Payloads
+
 
         # TODO - add more!!!
 
@@ -132,7 +138,8 @@ install_tools() {
     # Nishang
     git clone https://github.com/samratashok/nishang.git $powershell_scripts/ninshang
 
-
+    # PrivescCheck
+    git clone https://github.com/itm4n/PrivescCheck.git $powershell/PrivescCheck
 }
 
 check_bh() {
@@ -158,6 +165,15 @@ install_bh() {
     unzip $tools_path/BloodHound/BloodHound_4.1.zip
 
     # TODO - Configure cme intergration
+    # [BloodHound]
+    # bh_enabled = True
+    # bh_uri = 127.0.0.1
+    # bh_port = 7687
+    # bh_user = user
+    # bh_pass = pass
+
+    # Add custom bloodhound queries from hausec 
+    wget https://raw.githubusercontent.com/hausec/Bloodhound-Custom-Queries/master/customqueries.json -O '/home/'$SUDO_USER'/.config/bloodhound/customqueries.json'
 
     # Neo4j
     wget -O - https://debian.neo4j.com/neotechnology.gpg.key | sudo apt-key add -
@@ -220,6 +236,32 @@ win_binaries(){
 
 }
 
+install_wl() {
+    # install additional wordlists
+    # TODO
+}
+
+add_aliases() {
+    # nmap discovery
+    # nmap detailed
+    # parse
+    # web scan
+    alias discover
+    alias hi='hi :)' # :)
+    alias untar='tar -xf'
+    alias www='python3 -m http.server 8080'
+    alias ports='netstat -tulanp'
+
+
+}
+
+basic_scripts() {
+    # TODO
+    # 
+
+}
+
+
 options () {
     clear
     echo -e "\n    Select an option from menu:"                      
@@ -231,7 +273,9 @@ options () {
     echo -e "  4 - Install Kali tools         Install common Kali tools into " $tools_path  
     echo -e "  5 - Instal BOFs                Install Cobalt Strike agressor scripts into " $agressor_path                            
     echo -e "  6 - Start BloodHound           Start Neo4j and BloodHound (installs if not already installed)"
-    echo -e "  7 - TODO                       TODO"
+    echo -e "  7 - Install wordlists (TODO)   Install additional wordlists"
+    echo -e "  8 - Add aliases (TODO)         TODO"
+    echo -e "  9 - TODO                       TODO"
     echo -e "  x - Exit                       Exit the setup script"                                      
 
     read -n1 -p "\n  Press key for menu item selection or press X to exit: " menu
@@ -243,9 +287,13 @@ options () {
         4) install_tools;;
         5) install_BOFs;;
         6) check_bh;;
-        7) exit;;
+        7) install_wl;;
+        8) add_aliases;;
+        9) exit;;
         x) exit;;  
     esac
+
+    #rerun menu?
 }
 
 # main

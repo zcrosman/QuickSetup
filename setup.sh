@@ -58,7 +58,10 @@ install_BOFs() {
     git clone https://github.com/Und3rf10w/Aggressor-scripts.git $agressor_path/Und3rf10w-agressor-scripts
     git clone https://github.com/harleyQu1nn/AggressorScripts $agressor_path/harleyQu1nn-agressor-scripts
     git clone https://github.com/anthemtotheego/CredBandit.git $agressor_path/CredBandit
+    git clone https://github.com/mgeeky/cobalt-arsenal.git $agressor_path/cobalt-arsenal
+    
     # TODO add custom BOFs
+    # TODO load into Cobalt Strike
 }
 
 install_tools() {
@@ -82,11 +85,15 @@ install_tools() {
     go get github.com/ropnop/kerbrute #TODO output dir
 
     # pypykatz
-    git clone https://github.com/skelsec/pypykatz.git $tools_path
+    git clone https://github.com/skelsec/pypykatz.git $tools_path/pypykatz
 
     # evilwin-rm
     gem install evil-winrm
 
+    # DonPAPI
+    https://github.com/login-securite/DonPAPI.git $tools_path/DonPAPI
+    python3 -m pip install $tools_path/DonPAPI/requirements.txt
+    
     # Eyewitness
     git clone https://github.com/FortyNorthSecurity/EyeWitness.git $tools_path/EyeWitness
     cd $tools_path/EyeWitness/Python/setup
@@ -103,6 +110,7 @@ install_tools() {
 
     # Bloodhound and Neo4j install
     install_bh
+
 
     # Binary/Payload Modification/Creation
     # TODO - create folder for payload creation????
@@ -175,18 +183,19 @@ install_bh() {
     mkdir $tools_path/BloodHound
     wget https://github.com/BloodHoundAD/BloodHound/releases/download/rolling/BloodHound-linux-x64.zip -O $tools_path/BloodHound/BloodHound_4.1.zip
     cd $tools_path/BloodHound
-    unzip $tools_path/BloodHound/BloodHound_4.1.zip
+    unzip BloodHound_4.1.zip
 
-    # Configure cme intergration
-    if [ ${config[bh_enabled]} = 'True' ]
-        $config='/home/'$SUDO_USER'/.cme/cme.conf'
-        echo '\n[BloodHound]' >> $config
-        echo 'bh_enabled = True' >> $config
-        echo 'bh_uri = '${config[bh_uri]} >> $config
-        echo 'bh_port = '${config[bh_port]} >> $config
-        echo 'bh_user = '${config[bh_user]} >> $config
-        echo 'bh_pass = '${config[bh_pass]} >> $config
-    fi
+    # # Configure cme intergration
+    # if [ ${config[bh_enabled]} = 'True' ]
+    #     crackmapexec # Run for initial setup of conf files
+    #     $config='/home/'$SUDO_USER'/.cme/cme.conf'
+    #     echo '\n[BloodHound]' >> $config
+    #     echo 'bh_enabled = True' >> $config
+    #     echo 'bh_uri = '${config[bh_uri]} >> $config
+    #     echo 'bh_port = '${config[bh_port]} >> $config
+    #     echo 'bh_user = '${config[bh_user]} >> $config
+    #     echo 'bh_pass = '${config[bh_pass]} >> $config
+    # fi
 
     # Neo4j
     wget -O - https://debian.neo4j.com/neotechnology.gpg.key | sudo apt-key add -
